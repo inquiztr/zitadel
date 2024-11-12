@@ -70,7 +70,7 @@ Port: 8080 # ZITADEL_PORT
 ExternalPort: 8090 # ZITADEL_EXTERNALPORT
 # ExternalPort is the domain on which end users access ZITADEL.
 # Read more about external access: https://zitadel.com/docs/self-hosting/manage/custom-domain
-ExternalDomain: st.viewly.net # ZITADEL_EXTERNALDOMAIN
+ExternalDomain: 'st.viewly.net' # ZITADEL_EXTERNALDOMAIN
 # ExternalSecure specifies if ZITADEL is exposed externally using HTTPS or HTTP.
 # Read more about external access: https://zitadel.com/docs/self-hosting/manage/custom-domain
 ExternalSecure: true # ZITADEL_EXTERNALSECURE
