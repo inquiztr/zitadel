@@ -5,12 +5,16 @@ services:
       - "zitadel"
     image: "ghcr.io/zitadel/zitadel:latest"
     # ZITADEL_MASTERKEY: 'SAcD5TY0QPp89ip28bZPfEA5WDxqmobx' # run tr -dc A-Za-z0-9 </dev/urandom | head -c 32
-    command: "start-from-init --config /zitadel-config.yaml --config /zitadel-secrets.yaml --masterkey ${MASTERKEY} --tlsMode disabled"
+    command: "start-from-init --config /zitadel-config.yaml --masterkey ${MASTERKEY} --tlsMode disabled"
     environment:
       ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME: ${ADMIN_USERNAME}
       ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD: ${ADMIN_PASSWORD}
       ZITADEL_EXTERNALSECURE: true
       ZITADEL_EXTERNALDOMAIN: auth.admintera.com
+      ZITADEL_DATABASE_POSTGRES_USER_USERNAME: ${PG_USER}
+      ZITADEL_DATABASE_POSTGRES_USER_PASSWORD: ${PG_PASSWORD}
+      ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME: ${PG_USER}
+      ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD: ${PG_PASSWORD}
 
     depends_on:
       db:
@@ -19,8 +23,6 @@ services:
       - "8090:8080"
     volumes:
       - "./zitadel-config.yaml:/zitadel-config.yaml:ro"
-      - "./zitadel-secrets.yaml:/zitadel-secrets.yaml:ro"
-      - "./zitadel-init-steps.yaml:/zitadel-init-steps.yaml:ro"
   db:
     restart: "always"
     image: postgres:16-alpine
