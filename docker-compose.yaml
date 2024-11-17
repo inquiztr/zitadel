@@ -29,7 +29,7 @@ services:
     networks:
       - "zitadel"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "zitadel", "-U", "${PG_USER}"]
+      test: ["CMD-SHELL", "pg_isready", "-d", "zitadel", "-U", "postgresuser"]
       interval: "10s"
       timeout: "30s"
       retries: 5
