@@ -17,9 +17,9 @@ services:
     ports:
       - "8090:8080"
     volumes:
-      - "./example-zitadel-config.yaml:/example-zitadel-config.yaml:ro"
-      - "./example-zitadel-secrets.yaml:/example-zitadel-secrets.yaml:ro"
-      - "./example-zitadel-init-steps.yaml:/example-zitadel-init-steps.yaml:ro"
+      - "./zitadel-config.yaml:/zitadel-config.yaml:ro"
+      - "./zitadel-secrets.yaml:/zitadel-secrets.yaml:ro"
+      - "./zitadel-init-steps.yaml:/zitadel-init-steps.yaml:ro"
   db:
     restart: "always"
     image: postgres:16-alpine
@@ -29,7 +29,7 @@ services:
     networks:
       - "zitadel"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready", "-d", "zitadel", "-U", "$${PG_USER}" ]
+      test: ["CMD-SHELL", "pg_isready", "-d", "zitadel", "-U", "$${PG_USER}"]
       interval: "10s"
       timeout: "30s"
       retries: 5
