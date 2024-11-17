@@ -26,6 +26,8 @@ services:
     environment:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASSWORD}
+      PGUSER: ${PG_USER}
+      PGPASSWORD: ${PG_PASSWORD}
     networks:
       - "zitadel"
     healthcheck:
