@@ -29,11 +29,7 @@ services:
   certs:
     image: "alpine:latest"
     entrypoint: ["/bin/sh", "-c"]
-    command: >
-      apk add --no-cache openssl &&
-      mkdir -p /etc/ssl/certs &&
-      openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj '/CN=auth.admintera.com' -keyout /etc/ssl/certs/privkey.pem -out /etc/ssl/certs/fullchain.pem &&
-      chown 1000:1000 /etc/ssl/certs/*
+    command: "apk add --no-cache openssl && mkdir -p /etc/ssl/certs && openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj '/CN=auth.admintera.com' -keyout /etc/ssl/certs/privkey.pem -out /etc/ssl/certs/fullchain.pem && chown 1000:1000 /etc/ssl/certs/*"
     volumes:
       - "zitadel-certs:/etc/ssl/certs:rw"
     restart: "no"
