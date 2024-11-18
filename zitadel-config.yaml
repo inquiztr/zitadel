@@ -3,7 +3,7 @@ Log:
   Level: 'info'
 
 # Make ZITADEL accessible over HTTP, not HTTPS
-ExternalSecure: false
+ExternalSecure: true
 ExternalDomain: 'auth.admintera.com' # change this to your domain
 ExternalPort: 443
 # If not using the docker compose example, adjust these values for connecting ZITADEL to your PostgreSQL
@@ -14,7 +14,7 @@ Database:
     Database: zitadel
     User:
       SSL:
-        Mode: 'disable'
+        Mode: 'require'
     Admin:
       SSL:
-        Mode: 'disable'
+        Mode: 'require'

@@ -5,11 +5,11 @@ services:
       - "zitadel"
     image: "ghcr.io/zitadel/zitadel:latest"
     # ZITADEL_MASTERKEY: 'SAcD5TY0QPp89ip28bZPfEA5WDxqmobx' # run tr -dc A-Za-z0-9 </dev/urandom | head -c 32
-    command: "start-from-init --config /zitadel-config.yaml --masterkey ${MASTERKEY} --tlsMode disabled"
+    command: "start-from-init --config /zitadel-config.yaml --masterkey ${MASTERKEY} --tlsMode external"
     environment:
       ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME: ${ADMIN_USERNAME}
       ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD: ${ADMIN_PASSWORD}
-      ZITADEL_EXTERNALSECURE: false
+      ZITADEL_EXTERNALSECURE: true
       ZITADEL_EXTERNALDOMAIN: "auth.admintera.com"
       ZITADEL_DATABASE_POSTGRES_USER_USERNAME: ${PG_USER}
       ZITADEL_DATABASE_POSTGRES_USER_PASSWORD: ${PG_PASSWORD}
@@ -17,12 +17,24 @@ services:
       ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD: ${PG_PASSWORD}
 
     depends_on:
+      certs:
+        condition: "service_completed_successfully"
       db:
         condition: "service_healthy"
     ports:
       - "8090:8080"
     volumes:
       - "./zitadel-config.yaml:/zitadel-config.yaml:ro"
+      - "zitadel-certs:/etc/ssl/certs:ro"
+  certs:
+    image: "postgres:13-alpine"
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      [
+        "mkdir -p /etc/ssl/certs && openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj '/CN=auth.admintera.com' -keyout /etc/ssl/certs/privkey.pem -out /etc/ssl/certs/fullchain.pem && chown 1000:1000 /etc/ssl/certs/*",
+      ]
+    volumes:
+      - "zitadel-certs:/etc/ssl/certs:rw"
   db:
     restart: "always"
     image: postgres:16-alpine
@@ -40,10 +52,13 @@ services:
       retries: 5
       start_period: "20s"
     volumes:
-      - "data:/pgdb/pgdb-data:rw"
+      - postgres_data:/var/lib/postgresql/data
+      - "zitadel-certs:/etc/ssl/certs:ro"
 
 networks:
   zitadel:
+  zitadel-certs:
 
 volumes:
-  data:
+  postgres_data:
+  zitadel-certs:
