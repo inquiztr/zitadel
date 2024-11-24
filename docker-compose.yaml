@@ -28,14 +28,6 @@ services:
     volumes:
       - "./zitadel-config.yaml:/zitadel-config.yaml:ro"
 
-  certs:
-    image: "postgres:16-alpine"
-    entrypoint: ["/bin/sh", "-c"]
-    command: "apk add --no-cache openssl && mkdir -p /zitadel-certs && openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj '/CN=auth.admintera.com' -keyout /zitadel-certs/privkey.pem -out /zitadel-certs/fullchain.pem && chown 1000:1000 /zitadel-certs/*"
-    volumes:
-      - "zitadel-certs:/zitadel-certs:rw"
-    restart: "no"
-
   db:
     restart: "always"
     image: postgres:16-alpine
