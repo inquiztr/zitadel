@@ -5,14 +5,16 @@ services:
       - "zitadel"
     image: "ghcr.io/zitadel/zitadel:latest"
     # ZITADEL_MASTERKEY: 'SAcD5TY0QPp89ip28bZPfEA5WDxqmobx' # run tr -dc A-Za-z0-9 </dev/urandom | head -c 32
-    command: "start-from-init --config /zitadel-config.yaml --masterkey ${MASTERKEY} --tlsMode external"
+    command: "start-from-init --masterkey ${MASTERKEY} --tlsMode external"
     environment:
       ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME: ${ADMIN_USERNAME}
       ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD: ${ADMIN_PASSWORD}
       ZITADEL_EXTERNALDOMAIN: "auth.admintera.com"
       ZITADEL_EXTERNALPORT: 443
       ZITADEL_EXTERNALSECURE: true
-      ZITADEL_TLS_ENABLED: false
+      ZITADEL_TLS_ENABLED: true
+      ZITADEL_TLS_CERTPATH: /etc/certs/selfsigned.crt
+      ZITADEL_TLS_KEYPATH: /etc/certs/selfsigned.key
       ZITADEL_DATABASE_POSTGRES_HOST: db
       ZITADEL_DATABASE_POSTGRES_PORT: 5432
       ZITADEL_DATABASE_POSTGRES_DATABASE: zitadel
@@ -20,7 +22,8 @@ services:
       ZITADEL_DATABASE_POSTGRES_USER_PASSWORD: ${PG_PASSWORD}
       ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME: ${PG_USER}
       ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD: ${PG_PASSWORD}
-      ZITADEL_DATABASE_POSTGRES_SSLMODE: "disable"
+      ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE: disable
+      ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE: disable
 
     depends_on:
       db:
@@ -28,7 +31,8 @@ services:
     ports:
       - "8090:8080"
     volumes:
-      - "./zitadel-config.yaml:/zitadel-config.yaml:ro"
+      - ./selfsigned.crt:/etc/certs/selfsigned.crt
+      - ./selfsigned.key:/etc/certs/selfsigned.key
 
   db:
     restart: "always"
