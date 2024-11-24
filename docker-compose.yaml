@@ -12,15 +12,16 @@ services:
       ZITADEL_EXTERNALDOMAIN: "auth.admintera.com"
       ZITADEL_EXTERNALPORT: 443
       ZITADEL_EXTERNALSECURE: true
-      ZITADEL_TLS_ENABLED: true
+      ZITADEL_TLS_ENABLED: false
+      ZITADEL_DATABASE_POSTGRES_HOST: db
+      ZITADEL_DATABASE_POSTGRES_PORT: 5432
+      ZITADEL_DATABASE_POSTGRES_DATABASE: zitadel
       ZITADEL_DATABASE_POSTGRES_USER_USERNAME: ${PG_USER}
       ZITADEL_DATABASE_POSTGRES_USER_PASSWORD: ${PG_PASSWORD}
       ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME: ${PG_USER}
       ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD: ${PG_PASSWORD}
 
     depends_on:
-      certs:
-        condition: "service_completed_successfully"
       db:
         condition: "service_healthy"
     ports:
@@ -46,11 +47,9 @@ services:
       start_period: "20s"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - certs:/cockroach/certs:rw
 
 networks:
   zitadel:
 
 volumes:
   postgres_data:
-  zitadel-certs:
